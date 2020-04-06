@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+    <title>Document</title>
+    <script src="echarts.min.js"></script>
+    <script src="hubei.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main" style="width:100%;height:100%"></div>
+
+    <script>
+
+
+        window.onload = function () {
+            setTimeout(function () {
+                echarts.init(document.getElementById('main')).setOption({
+                    tooltip: {
+                        triggerOn: "click",
+                        formatter: function (e, t, n) {
+                            return `${e.data.name}<br/> 确诊人数：${e.data.sure_cnt}<br/>治愈人数：${e.data.cure_cnt}<br/>死亡人数：${e.data.die_cnt}`
+                        }
+                    },
+
+                    visualMap: {
+                      
+                        left: 0,
+                        bottom: 0,
+                        showLabel: !0,
+                        text: ["高", "低"],
+                        pieces: [{
+                            gte: 20001,
+                            label: ">20001 人",
+                            color: "#7f1100"
+                        }, {
+                            gte: 10000,
+                            lte: 20000,
+                            label: "10000~20000人",
+                            color: "rgba(238,92,28,1)"
+                        }, {
+                            gte: 500,
+                            lte: 999,
+                            label: "500~999人",
+                            color: "#ff8c71"
+                        }, {
+                            gte: 100,
+                            lte: 499,
+                            label: "100~499人",
+                            color: "rgba(255,188,155,1)"
+                        }, {
+                            label: '1~99人',
+                            color: "rgba(255,231,219,1)",
+                            gte: 1,
+                            lte: 99
+                        }],
+                        show: !0
+                    },
+
+                    series: [{
+                        name: "确诊病例",
+                        type: "map",
+                        left: 'center',
+                        map: 'hubei',
+                        data: window.dataList,
+                        roam: 'scale',
+                        scaleLimit: {
+                            min: 1,
+                            max: 5
+                        },
+
+                        zoom: 1.23,
+                        top: 50,
+                        label: {
+                            show: true,
+                            position: 'inside',
+                            // margin: 8,
+                            fontSize: 10
+                        },
+                        showLegendSymbol: false,
+                        itemStyle: {
+                            normal: {
+                                //shadowBlur: 50,
+                                //shadowColor: 'rgba(0, 0, 0, 0.2)',
+                                borderColor: "rgba(0, 0, 0, 0.2)"
+                            },
+                            emphasis: {
+                                areaColor: "rgba(255,232,82,1)",
+                                shadowOffsetX: 0,
+                                shadowOffsetY: 0,
+                                borderWidth: 0,
+                                shadowBlur: 20,
+                                shadowColor: '#FFE852',
+                                color: '#fff'
+                            }
+                        }
+                    }]
+                });
+            }, 500)
+        }
+
+    </script>
+</body>
+
+</html>

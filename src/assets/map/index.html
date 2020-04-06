@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+    <title>Document</title>
+    <script src="echarts.min.js"></script>
+    <script src="china.js"></script>
+    <script src="hubei.json"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="main" style="width:100%;height:100%"></div>
+
+    <script>
+        window.onload = function () {
+           setTimeout(function(){
+            var chinaEchartsObj = echarts.getMap('china');
+            var geoJSONChina = chinaEchartsObj.geoJson;
+            var allDefProvince = geoJSONChina.features;
+            for (var i = 0, len = allDefProvince.length; i < len; i++) {
+                var sglProvinceProperties = allDefProvince[i].properties;
+                var sglProvinceName = sglProvinceProperties.name;
+
+                switch (sglProvinceName) {
+                    case '新疆':
+                        sglProvinceProperties.cp[0] = 85.617733;
+                        sglProvinceProperties.cp[1] = 40.792818;
+                        break;
+                    case '山西':
+                        sglProvinceProperties.cp[0] = 110.95;
+                        sglProvinceProperties.cp[1] = 37.95;
+                        break;
+                    case '青海'://def:101.778916,36.623178
+                        sglProvinceProperties.cp[0] = 96.617733;
+                        sglProvinceProperties.cp[1] = 35.623178;
+                        break;
+                    case '江苏'://def:118.767413,32.041544
+                        sglProvinceProperties.cp[0] = 119.767413;
+                        sglProvinceProperties.cp[1] = 33.041544;
+                        break;
+                    case '西藏'://def:118.767413,32.041544
+                        sglProvinceProperties.cp[0] = 87.617733;
+                        sglProvinceProperties.cp[1] = 30.792818;
+                        break;
+                    case '内蒙古'://def:118.767413,32.041544
+                        sglProvinceProperties.cp[0] = 108.670801;
+                        sglProvinceProperties.cp[1] = 40.818311;
+                        break;
+                    case '四川'://def:118.767413,32.041544
+
+                        sglProvinceProperties.cp[0] = 102.065735;
+                        sglProvinceProperties.cp[1] = 30.659462;
+                        break;
+                    case '广西'://def:118.767413,32.041544
+                        sglProvinceProperties.cp[0] = 108.320004;
+                        sglProvinceProperties.cp[1] = 23.82402;
+                        break;
+                    case '湖北':
+
+                        sglProvinceProperties.cp[0] = 113.098572;
+                        sglProvinceProperties.cp[1] = 30.684355;
+                        break;
+                    case '浙江':
+                        sglProvinceProperties.cp[0] = 120.153576;
+                        sglProvinceProperties.cp[1] = 29.287459;
+                        break;
+                    case '台湾':
+                        sglProvinceProperties.cp[0] = 121.509062;
+                        sglProvinceProperties.cp[1] = 23.044332;
+                        break;
+                    case '黑龙江':
+                        sglProvinceProperties.cp[0] = 128.642464;
+                        sglProvinceProperties.cp[1] = 46.756967;
+                        break; 
+                        case '河南':
+                        sglProvinceProperties.cp[0] = 113.665412;
+                        sglProvinceProperties.cp[1] = 33.757975;
+                        break;           
+                }
+            }
+            echarts.registerMap(window.mapName, geoJSONChina, {});
+            echarts.init(document.getElementById('main')).setOption({
+                tooltip: {
+                    triggerOn: "click",
+                    formatter: function (e, t, n) {
+                        return `${e.data.name}<br/> 确诊人数：${e.data.sure_cnt}<br/>治愈人数：${e.data.cure_cnt}<br/>死亡人数：${e.data.die_cnt}`
+                    }
+                },
+
+                visualMap: {
+                    min: 0,
+                    max: 1000000000,
+                    left: 0,
+                    bottom: 0,
+                    showLabel: !0,
+                    text: ["高", "低"],
+                    pieces: [{
+                        gte: 20001,
+                        label: ">20001 人",
+                        color: "#7f1100"
+                    }, {
+                        gte: 10000,
+                        lte: 20000,
+                        label: "10000~20000人",
+                        color: "rgba(238,92,28,1)"
+                    }, {
+                        gte: 500,
+                        lte: 999,
+                        label: "500~999人",
+                        color: "#ff8c71"
+                    }, {
+                        gte: 100,
+                        lte: 499,
+                        label: "100~499人",
+                        color: "rgba(255,188,155,1)"
+                    }, {
+                        label:'1~99人',
+                        color: "rgba(255,231,219,1)",
+                        gte:1,
+                        lte:99
+                    }],
+                    show: !0
+                },
+
+                series: [{
+                    name: "确诊病例",
+                    type: "map",
+                    left: 'center',
+                    geoIndex: 0,
+                    mapType: window.mapName,
+                    data: window.dataList,
+                    roam: 'scale',
+                    scaleLimit: {
+                        min: 1,
+                        max: 5
+                    },
+
+                    zoom: 1.23,
+                    top: 50,
+                    label: {
+                        show: true,
+                        position: 'inside',
+                        // margin: 8,
+                        fontSize: 10
+                    },
+                    showLegendSymbol: false,
+                    itemStyle: {
+                        normal: {
+                            //shadowBlur: 50,
+                            //shadowColor: 'rgba(0, 0, 0, 0.2)',
+                            borderColor: "rgba(0, 0, 0, 0.2)"
+                        },
+                        emphasis: {
+                            areaColor: "rgba(255,232,82,1)",
+                            shadowOffsetX: 0,
+                            shadowOffsetY: 0,
+                            borderWidth: 0,
+                            shadowBlur: 20,
+                            shadowColor: '#FFE852',
+                            color: '#fff'
+                        }
+                    }
+                }]
+            });
+           },500)
+        }
+
+    </script>
+</body>
+
+</html>
